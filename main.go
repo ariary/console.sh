@@ -114,15 +114,18 @@ func setupRoutes() {
 func main() {
 	port := ":8080"
 	fmt.Println("Launch 'console.sh' websocket server listening on", port)
-	setupRoutes()
-	log.Fatal(http.ListenAndServeTLS(port, "cert.pem", "key.pem", nil))
-
 	//Load current directory
 	cmdDir, err := os.Getwd()
 	if err != nil {
 		log.Println(err)
 	}
+
+	//log info
 	fmt.Println("Serve on directory:", cmdDir)
 	fmt.Println("Copy paste in browser console:")
-	fmt.Println("s=new WebSocket(\"wss://localhost:8080/sh\"),s.onmessage=function(ev){console.log(ev.data)}")
+	fmt.Println("s=new WebSocket(\"wss://localhost:8080/sh\"),s.onmessage=function(ev){console.log(ev.data)};function sh(cmd){s.send(cmd)};")
+
+	setupRoutes()
+	log.Fatal(http.ListenAndServeTLS(port, "cert.pem", "key.pem", nil))
+
 }
