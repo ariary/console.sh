@@ -23,6 +23,7 @@ Now you are able to execute shell command from browser console with:
 //OR (prompted version)
 > psh
 ```
+<div align=center><img src=https://github.com/ariary/console.sh/blob/main/console.sh.png></div>
 
 ## Why?
 
