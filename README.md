@@ -17,9 +17,9 @@ s=new WebSocket("wss://localhost:8080/sh"),s.onmessage=function(ev){console.log(
 
 Now you are able to execute shell command from browser console with:
 ```javascript
-> sh("[cmd]")
+> sh("[command]")
 //OR (alternative)
-> sh`[cmd]`
+> sh`[command]`
 //OR (prompted version)
 > psh
 ```
