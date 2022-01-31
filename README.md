@@ -15,7 +15,7 @@ mkcert -key-file key.pem -cert-file cert.pem localhost 127.0.0.1 ::1 # Many way 
 ./console.sh-server
 ```
 
-Open browser's console (certainly with `Shift + CTRL + K` or `Shift + ⌘ + K`). Copy/paste within:
+Open browser's console (certainly with `Shift + CTRL + J` or `Shift + ⌘ + J`). Copy/paste within:
 ```
 s=new WebSocket("wss://localhost:8080/sh"),s.onmessage=function(ev){console.log(ev.data)}
 ```
@@ -23,6 +23,6 @@ s=new WebSocket("wss://localhost:8080/sh"),s.onmessage=function(ev){console.log(
 Now execute shell command from browser console with: `s.send([cmd])`
 
 ## Notes
-* SOP and CORS don't apply to websocket, **However** CSP does. Many websites specify `connect-src` CSP directive which prevent restrict loaded URL from WebSocket (⇒ can't use `conbsole.sh` on these websites)
-* Without `wss` (secure websocket) browser wuldn't authorize websocket communication ⇒ need certificate and key
+* SOP and CORS don't apply to websocket, **However** CSP does. Many websites specify `connect-src` CSP directive which prevent restrict loaded URL from WebSocket (⇒ can't use `conbsole.sh` on these websites, empty new tabs will do the job)
+* Without `wss` (secure websocket) browser wouldn't authorize websocket communication ⇒ need certificate and key
 * **⚠️ This project is not secure! Use it with parsimony and of course shoot out the server when when you are done using it**
