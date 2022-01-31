@@ -15,7 +15,7 @@ mkcert -key-file key.pem -cert-file cert.pem localhost 127.0.0.1 ::1 # Many way 
 ./console.sh-server
 ```
 
-Open browser's console (certainly with `Shift + CTRL + J` or `Shift + ⌘ + J`). Copy/paste within:
+Open browser's console (certainly with `Shift + CTRL + K` or `Shift + ⌘ + K`). Copy/paste within:
 ```
 s=new WebSocket("wss://localhost:8080/sh"),s.onmessage=function(ev){console.log(ev.data)}
 ```
