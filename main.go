@@ -123,7 +123,7 @@ func main() {
 	//log info
 	fmt.Println("Serve on directory:", cmdDir)
 	fmt.Println("Copy paste in browser console:")
-	fmt.Println("s=new WebSocket(\"wss://localhost:8080/sh\"),s.onmessage=function(ev){console.log(ev.data)};function sh(cmd){s.send(cmd)};")
+	fmt.Println("s=new WebSocket(\"wss://localhost:8080/sh\"),s.onmessage=function(ev){console.log(ev.data)};function sh(cmd){s.send(cmd)};function promptsh(){cmd=prompt();s.send(cmd)};Object.defineProperty(window, 'psh', { get: promptsh });")
 
 	setupRoutes()
 	log.Fatal(http.ListenAndServeTLS(port, "cert.pem", "key.pem", nil))

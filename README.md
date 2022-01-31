@@ -13,10 +13,18 @@ mkcert -key-file key.pem -cert-file cert.pem localhost 127.0.0.1 ::1 # Many way 
 
 Open browser console (certainly with `Shift + CTRL + J` or `Shift + ⌘ + J`). Copy/paste within:
 ```javascript
-s=new WebSocket("wss://localhost:8080/sh"),s.onmessage=function(ev){console.log(ev.data)};function sh(cmd){s.send(cmd)};
+s=new WebSocket("wss://localhost:8080/sh"),s.onmessage=function(ev){console.log(ev.data)};function sh(cmd){s.send(cmd)};function promptsh(){cmd=prompt();s.send(cmd)};Object.defineProperty(window, 'psh', { get: promptsh });
 ```
 
-Now execute shell command from browser console with: `sh("[cmd]")`
+
+Now execute shell command from browser console with:
+```javascript
+sh("[cmd]")
+//OR (alternative)
+sh`[cmd]`
+//OR (prompted version)
+`psh`
+```
 
 ## Why?
 
