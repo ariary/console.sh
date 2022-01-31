@@ -15,13 +15,13 @@ s=new WebSocket("wss://localhost:8080/sh"),s.onmessage=function(ev){console.log(
 ```
 
 
-Now you are able execute shell command from browser console with:
+Now you are able to execute shell command from browser console with:
 ```javascript
-sh("[cmd]")
+> sh("[cmd]")
 //OR (alternative)
-sh`[cmd]`
+> sh`[cmd]`
 //OR (prompted version)
-`psh`
+> psh
 ```
 
 ## Why?
