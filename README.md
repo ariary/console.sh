@@ -31,6 +31,6 @@ sh`[cmd]`
 Why not! The need does not inspire the feature, it's the other way around *(s/o Apple philosophy)*
 
 ## Notes
-* SOP and CORS don't apply to websocket, **However** CSP does. Many websites specify `connect-src` CSP directive which prevent restrict loaded URL from WebSocket (⇒ can't use `conbsole.sh` on these websites, empty new tabs will do the job)
+* SOP and CORS don't apply to websocket, **However** CSP does. Many websites specify `connect-src` CSP directive which restricts loaded URL from WebSocket (⇒ can't use `console.sh` on these websites, empty new tabs will do the job)
 * Without `wss` (secure websocket) browser wouldn't authorize websocket communication ⇒ need certificate and key
-* **⚠️ This project is not secure! Use it with parsimony and of course shoot out the server when when you are done using it**
+* **⚠️ This project is not secure! Use it with parsimony and of course shut down the server when you are done using it**
