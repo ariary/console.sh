@@ -37,7 +37,7 @@ curl -lO -L https://github.com/ariary/console.sh/releases/latest/download/consol
 chmod +x console.sh
 ```
 
-Then as you have tonlaunch the websocket server with certificates (otherwise browsers won't accept connection). Create cert and key in the same directory:
+Then as you have to launch the websocket server with certificates (otherwise browsers won't accept connection). Create cert and key in the same directory:
 ```shell
 mkcert -install
 mkcert -key-file key.pem -cert-file cert.pem localhost 127.0.0.1 ::1 # Many way to do it, openssl etc => key: key.pem and cert: cert.pem
