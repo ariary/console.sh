@@ -1,4 +1,4 @@
-module console.sh
+module github.com/ariary/console.sh
 
 go 1.17
 
