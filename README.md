@@ -32,9 +32,11 @@ Why not! The need does not inspire the feature, it's the other way around *(s/o 
 ## Set-up
 
 Install `console.sh`:
-```
+```shell
 curl -lO -L https://github.com/ariary/console.sh/releases/latest/download/console.sh
 chmod +x console.sh
+# or with go
+go install github.com/ariary/console.sh@latest
 ```
 
 Then as you have to launch the websocket server with certificates (otherwise browsers won't accept connection). Create cert and key in the same directory:
