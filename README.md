@@ -1,6 +1,12 @@
 # console.sh
 
-Execute shell command from browser console (developer tools)
+<div align=center>
+<img src=https://github.com/ariary/console.sh/blob/main/img/logo.png width=150>
+
+
+  <b>Execute shell command from browser console (developer tools)</b>
+</div>
+
 
 ## Usage
 
