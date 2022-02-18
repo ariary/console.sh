@@ -12,7 +12,7 @@
 
 Launch websocket server:
 ```shell
-./console.sh
+console.sh
 ```
 
 Open browser console (certainly with `Shift + CTRL + K` or `Shift + ⌘ + K`). Copy/paste within:
