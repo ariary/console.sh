@@ -9,6 +9,7 @@ import (
 	"os/exec"
 	"strings"
 
+	"github.com/ariary/go-utils/pkg/clipboard"
 	"github.com/gorilla/websocket"
 )
 
@@ -111,6 +112,35 @@ func setupRoutes() {
 	http.HandleFunc("/sh", wsEndpoint)
 }
 
+//generateCert: try to generate cert in current directory with mkcert
+func generateCert() error {
+	// Check for mkcert installation
+	if _, err := exec.LookPath("mkcert"); err != nil {
+		return err
+	}
+
+	//create local CA and install it
+	mkcertInstallArgs := []string{"mkcert", "-install"}
+	mkcertInstallCmd := exec.Command(mkcertInstallArgs[0], mkcertInstallArgs[1:]...)
+
+	if err := mkcertInstallCmd.Start(); err != nil {
+		return err
+	}
+
+	if err := mkcertInstallCmd.Wait(); err != nil {
+		return err
+	}
+
+	mkcertGenerateArgs := []string{"mkcert", "--key-file", "key.pem", "-cert-file", "cert.pem", "localhost", "127.0.0.1", "::1"}
+	mkcertGenerateCmd := exec.Command(mkcertGenerateArgs[0], mkcertGenerateArgs[1:]...)
+
+	if err := mkcertGenerateCmd.Start(); err != nil {
+		return err
+	}
+
+	return mkcertGenerateCmd.Wait()
+}
+
 func main() {
 	port := ":8080"
 	fmt.Println("Launch 'console.sh' websocket server listening on", port)
@@ -123,9 +153,26 @@ func main() {
 	//log info
 	fmt.Println("Serve on directory:", cmdDir)
 	fmt.Println("Copy paste in browser console:")
-	fmt.Println("s=new WebSocket(\"wss://localhost:8080/sh\"),s.onmessage=function(ev){console.log(ev.data)};function sh(cmd){s.send(cmd)};function promptsh(){cmd=prompt();s.send(cmd)};Object.defineProperty(window, 'psh', { get: promptsh });")
+	command := "s=new WebSocket(\"wss://localhost:8080/sh\"),s.onmessage=function(ev){console.log(ev.data)};function sh(cmd){s.send(cmd)};function promptsh(){cmd=prompt();s.send(cmd)};Object.defineProperty(window, 'psh', { get: promptsh });"
+	fmt.Println(command)
+	clipboard.Copy(command)
 
 	setupRoutes()
-	log.Fatal(http.ListenAndServeTLS(port, "cert.pem", "key.pem", nil))
+
+	// launch webserver
+	err = http.ListenAndServeTLS(port, "cert.pem", "key.pem", nil)
+	fmt.Println(err)
+	// try to generate cert
+	if strings.Contains(err.Error(), "no such file or directory") {
+		//try to generate cert
+		if errMkcert := generateCert(); errMkcert != nil {
+			fmt.Println("Failed to generate cert with mkcert", errMkcert)
+			os.Exit(1)
+		}
+		fmt.Println("Generate cert with mkcert in current directory (cert.pem and key.pem).. Restart server")
+		log.Fatal(http.ListenAndServeTLS(port, "cert.pem", "key.pem", nil))
+	} else {
+		os.Exit(1)
+	}
 
 }
