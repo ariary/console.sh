@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"flag"
 	"fmt"
 	"log"
 	"net/http"
@@ -112,8 +113,8 @@ func setupRoutes() {
 	http.HandleFunc("/sh", wsEndpoint)
 }
 
-//generateCert: try to generate cert in current directory with mkcert
-func generateCert() error {
+//generateCert: try to generate cert in current directory with mkcert.
+func generateCert(addr string) error {
 	// Check for mkcert installation
 	if _, err := exec.LookPath("mkcert"); err != nil {
 		return err
@@ -131,7 +132,7 @@ func generateCert() error {
 		return err
 	}
 
-	mkcertGenerateArgs := []string{"mkcert", "--key-file", "key.pem", "-cert-file", "cert.pem", "localhost", "127.0.0.1", "::1"}
+	mkcertGenerateArgs := []string{"mkcert", "--key-file", "key.pem", "-cert-file", "cert.pem", addr, "127.0.0.1", "::1"}
 	mkcertGenerateCmd := exec.Command(mkcertGenerateArgs[0], mkcertGenerateArgs[1:]...)
 
 	if err := mkcertGenerateCmd.Start(); err != nil {
@@ -142,7 +143,14 @@ func generateCert() error {
 }
 
 func main() {
-	port := ":8080"
+	// flag & var
+	var addr, p string
+	flag.StringVar(&addr, "url", "localhost", "Websocket server URL")
+	flag.StringVar(&p, "p", "8080", "Websocket server port")
+	flag.Parse()
+	port := ":" + p
+
+	//launch server
 	fmt.Println("Launch 'console.sh' websocket server listening on", port)
 	//Load current directory
 	cmdDir, err := os.Getwd()
@@ -153,7 +161,7 @@ func main() {
 	//log info
 	fmt.Println("Serve on directory:", cmdDir)
 	fmt.Println("Copy paste in browser console:")
-	command := "s=new WebSocket(\"wss://localhost:8080/sh\"),s.onmessage=function(ev){console.log(ev.data)};function sh(cmd){s.send(cmd)};function promptsh(){cmd=prompt();s.send(cmd)};Object.defineProperty(window, 'psh', { get: promptsh });"
+	command := "s=new WebSocket(\"wss://" + addr + port + "/sh\"),s.onmessage=function(ev){console.log(ev.data)};function sh(cmd){s.send(cmd)};function promptsh(){cmd=prompt();s.send(cmd)};Object.defineProperty(window, 'psh', { get: promptsh });"
 	fmt.Println(command)
 	clipboard.Copy(command)
 
@@ -165,7 +173,7 @@ func main() {
 	// try to generate cert
 	if strings.Contains(err.Error(), "no such file or directory") {
 		//try to generate cert
-		if errMkcert := generateCert(); errMkcert != nil {
+		if errMkcert := generateCert(addr); errMkcert != nil {
 			fmt.Println("Failed to generate cert with mkcert", errMkcert)
 			os.Exit(1)
 		}
