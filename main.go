@@ -9,10 +9,34 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"text/template"
 
+	"github.com/ariary/go-utils/pkg/check"
 	"github.com/ariary/go-utils/pkg/clipboard"
+	"github.com/ariary/go-utils/pkg/color"
 	"github.com/gorilla/websocket"
 )
+
+const homePageTpl = `
+<!DOCTYPE html>
+<html>
+<body>
+	<h1>console.sh: Home Page</h1>
+	<p>Open browser console and interact with console.sh with:<br>
+	<pre><code>
+	> sh(\"[command]\")
+	//OR (prompted version)
+	> psh
+	</code></pre>
+	<script>{{ .ConnectionScript }}</script>
+	<br><br>
+	<p> In other tab, first connect to the console.sh websocket server with:<br>
+	<pre><code>
+	{{ .ConnectionScript}}
+	</code></pre>
+</body>
+</html>
+`
 
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
@@ -86,9 +110,20 @@ func reader(conn *websocket.Conn) {
 }
 
 //homePage: home handler
-func homePage(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "console.sh: Home Page")
-	//TO DO: html page with script that initiate websocket => light gotty
+func homePage(script string) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		remote := strings.Split(r.RemoteAddr, ":")[0]
+		fmt.Println(color.Purple(remote), "Visit home page")
+		t, err := template.New("homepage").Parse(homePageTpl)
+		check.Check(err, "failed loading home template")
+		data := struct {
+			ConnectionScript string
+		}{
+			ConnectionScript: script,
+		}
+
+		check.Check(t.Execute(w, data), "failed writing script in home page")
+	})
 }
 
 //wsEndpoint: Handler for /sh endpoint. Websocket connection
@@ -108,8 +143,9 @@ func wsEndpoint(w http.ResponseWriter, r *http.Request) {
 	reader(ws) // listen indefinitely for new messages coming through on our bebSocket connection
 }
 
-func setupRoutes() {
-	http.HandleFunc("/", homePage)
+func setupRoutes(script string) {
+	//http.HandleFunc("/", homePage)
+	http.Handle("/", homePage(script))
 	http.HandleFunc("/sh", wsEndpoint)
 }
 
@@ -162,10 +198,13 @@ func main() {
 	fmt.Println("Serve on directory:", cmdDir)
 	fmt.Println("Copy paste in browser console:")
 	command := "s=new WebSocket(\"wss://" + addr + port + "/sh\"),s.onmessage=function(ev){console.log(ev.data)};function sh(cmd){s.send(cmd)};function promptsh(){cmd=prompt();s.send(cmd)};Object.defineProperty(window, 'psh', { get: promptsh });"
-	fmt.Println(command)
+	fmt.Println(color.Teal(command))
 	clipboard.Copy(command)
+	fmt.Println("Or simply visit:")
+	fmt.Println(color.Teal("https://" + addr + port))
+	fmt.Println()
 
-	setupRoutes()
+	setupRoutes(command)
 
 	// launch webserver
 	err = http.ListenAndServeTLS(port, "cert.pem", "key.pem", nil)
