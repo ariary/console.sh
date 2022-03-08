@@ -59,4 +59,4 @@ mkcert -key-file key.pem -cert-file cert.pem localhost 127.0.0.1 ::1 # Many way 
 ## Notes
 * SOP and CORS don't apply to websocket, **However** CSP does. Many websites specify `connect-src` CSP directive which restricts loaded URL from WebSocket (⇒ can't use `console.sh` on these websites, empty new tabs will do the job)
 * Without `wss` (secure websocket) browser wouldn't authorize websocket communication ⇒ need certificate and key
-* **⚠️ This project is not secure! Use it with parsimony and of course shut down the server when you are done using it**
+* **⚠️ This project is not secure! Use it with parsimony and of course shut down the server when you are done using it**. Otherwise an XSS can easily become a RCE
