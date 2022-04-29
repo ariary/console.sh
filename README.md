@@ -33,7 +33,8 @@ Now you are able to execute shell command from browser console with:
 
 **N.B:** 
 * It is also possible to **connect to a remote shell** (`localhost` is not enforced). To do so use `--url` flag. 
-* **Visit home page is like a light [`gotty`](https://github.com/yudai/gotty)**. The home page automatically load the shell in your browser console
+* **Visit home page is like a light [`gotty`](https://github.com/yudai/gotty)**. The home page automatically load the shell in your browser console.
+* If you want terminal in HTML page instead of console.log -> `/interactive`
 
 
 ## Why?
