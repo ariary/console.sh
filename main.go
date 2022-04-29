@@ -20,6 +20,7 @@ import (
 const homePageTpl = `
 <!DOCTYPE html>
 <html>
+<title>console.sh: Home</title>
 <body>
 	<h1>console.sh: Home Page</h1>
 	<p>Open browser console and interact with console.sh with:<br>
@@ -34,6 +35,32 @@ const homePageTpl = `
 	<pre><code>
 	{{ .ConnectionScript}}
 	</code></pre>
+</body>
+</html>
+`
+
+const interactivePageTpl = `
+<html>
+<title>interactive console.sh</title>
+<body>
+	<h1>Enter command in box</h1>
+	<label for="command">Enter your command:</label>
+	<script>
+	//result listener
+	s=new WebSocket("wss://{{ .Url}}/sh"),s.onmessage=function(ev){document.getElementById("result").innerHTML=ev.data};
+	function sendCommand(){
+		console.log("toto")
+		cmd = document.getElementById("command").value
+		console.log(cmd)
+		s.send(cmd)
+	}
+	</script>
+	<form action="javascript:;" onsubmit="sendCommand(this)">
+	<input name='command' type='text' id='command'>
+        <button id='btn' class='btn btn-primary' type='submit'>execute</button>
+	</form>
+	<div id="result">
+	</div>
 </body>
 </html>
 `
@@ -126,6 +153,23 @@ func homePage(script string) http.Handler {
 	})
 }
 
+//interactivePage: interactive handler
+func interactivePage(url string) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		remote := strings.Split(r.RemoteAddr, ":")[0]
+		fmt.Println(color.Purple(remote), "Visit interactive terminal page")
+		t, err := template.New("interactive").Parse(interactivePageTpl)
+		check.Check(err, "failed loading interactive template")
+		data := struct {
+			Url string
+		}{
+			Url: url,
+		}
+
+		check.Check(t.Execute(w, data), "failed writing script in interactive page")
+	})
+}
+
 //wsEndpoint: Handler for /sh endpoint. Websocket connection
 func wsEndpoint(w http.ResponseWriter, r *http.Request) {
 	// upgrade this connection to a WebSocket connection
@@ -143,9 +187,10 @@ func wsEndpoint(w http.ResponseWriter, r *http.Request) {
 	reader(ws) // listen indefinitely for new messages coming through on our bebSocket connection
 }
 
-func setupRoutes(script string) {
+func setupRoutes(script string, url string) {
 	//http.HandleFunc("/", homePage)
 	http.Handle("/", homePage(script))
+	http.Handle("/interactive", interactivePage(url))
 	http.HandleFunc("/sh", wsEndpoint)
 }
 
@@ -187,7 +232,7 @@ func main() {
 	port := ":" + p
 
 	//launch server
-	fmt.Println("Launch 'console.sh' websocket server listening on", port)
+	fmt.Println("🚀 Launch 'console.sh' websocket server listening on", color.Italic(color.Yellow(port)))
 	//Load current directory
 	cmdDir, err := os.Getwd()
 	if err != nil {
@@ -195,31 +240,36 @@ func main() {
 	}
 
 	//log info
-	fmt.Println("Serve on directory:", cmdDir)
-	fmt.Println("Copy paste in browser console:")
-	command := "s=new WebSocket(\"wss://" + addr + port + "/sh\"),s.onmessage=function(ev){console.log(ev.data)};function sh(cmd){s.send(cmd)};function promptsh(){cmd=prompt();s.send(cmd)};Object.defineProperty(window, 'psh', { get: promptsh });"
+	url := addr + port
+	fmt.Println("📁 Serve on directory:", color.Italic(color.Yellow(cmdDir)))
+	fmt.Println()
+	fmt.Println("📋 Copy paste in browser console:")
+	command := "s=new WebSocket(\"wss://" + url + "/sh\"),s.onmessage=function(ev){console.log(ev.data)};function sh(cmd){s.send(cmd)};function promptsh(){cmd=prompt();s.send(cmd)};Object.defineProperty(window, 'psh', { get: promptsh });"
 	fmt.Println(color.Teal(command))
 	clipboard.Copy(command)
-	fmt.Println("Or simply visit:")
-	fmt.Println(color.Teal("https://" + addr + port))
+	fmt.Println("👀 Or simply visit:")
+	fmt.Println(color.Teal("https://" + url))
+	fmt.Println("💻 For a \"in-web-terminal\"")
+	fmt.Println(color.Teal("https://" + url + "/interactive"))
 	fmt.Println()
 
-	setupRoutes(command)
+	setupRoutes(command, url)
 
 	// launch webserver
 	err = http.ListenAndServeTLS(port, "cert.pem", "key.pem", nil)
-	fmt.Println(err)
-	// try to generate cert
-	if strings.Contains(err.Error(), "no such file or directory") {
-		//try to generate cert
-		if errMkcert := generateCert(addr); errMkcert != nil {
-			fmt.Println("Failed to generate cert with mkcert", errMkcert)
+	if err != nil {
+		// try to generate cert
+		if strings.Contains(err.Error(), "no such file or directory") {
+			//try to generate cert
+			if errMkcert := generateCert(addr); errMkcert != nil {
+				fmt.Println(color.Evil("Failed to generate cert with mkcert", errMkcert))
+				os.Exit(1)
+			}
+			fmt.Println("ℹ️ Generate cert with mkcert in current directory (cert.pem and key.pem).. Restart server")
+			log.Fatal(http.ListenAndServeTLS(port, "cert.pem", "key.pem", nil))
+		} else {
+			fmt.Println(color.Evil("Failed to start server:"), err)
 			os.Exit(1)
 		}
-		fmt.Println("Generate cert with mkcert in current directory (cert.pem and key.pem).. Restart server")
-		log.Fatal(http.ListenAndServeTLS(port, "cert.pem", "key.pem", nil))
-	} else {
-		os.Exit(1)
 	}
-
 }
