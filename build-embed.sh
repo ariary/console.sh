@@ -2,6 +2,7 @@
 
 if [[ $# -ne 1 ]]; then
     echo "usage: $0 \$REMOTE_URL"
+    echo "Perform \"mkcert -install\" before launching console.sh on remote to install CA in the local trusted store"
     exit 92
 fi
 

@@ -41,6 +41,8 @@ Now you are able to execute shell command from browser console with:
 
 Why not! The need does not inspire the feature, it's the other way around *(s/o Apple philosophy)*
 
+Otherwise, see [remote use](#remote-code-execution)
+
 ## Set-up
 
 Install `console.sh`:
@@ -55,6 +57,16 @@ Then as you have to launch the websocket server with certificates (otherwise bro
 ```shell
 mkcert -install
 mkcert -key-file key.pem -cert-file cert.pem localhost 127.0.0.1 ::1 # Many way to do it, openssl etc => key: key.pem and cert: cert.pem
+```
+
+### Remote Code execution
+
+`console.sh` can also be launched on a remote device. The main advantage of this is to browse internet while having a quick access to a kind of remote shell.
+
+To make it works, Install `mkcert` CA in your local trust store and build `console.sh` like this before transfer it on remote:
+```shell
+mkcert -install
+./build-embed.sh [REMOTE_URL] #directly embed cert,key in binary
 ```
 
 ## Notes
