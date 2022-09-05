@@ -1,0 +1,44 @@
+{
+	"name": "Console.sh",
+	"description": "Share terminal in browser",
+	"version": "0.0.1",
+	"manifest_version": 2,
+	"browser_action": {
+		"default_icon": {
+			"16": "assets/logo.png",
+			"48": "assets/logo.png",
+			"128": "assets/logo.png"
+		}
+	},
+	"icons": {
+		"16": "assets/logo.png",
+		"48": "assets/logo.png",
+		"128": "assets/logo.png"
+	},
+	"commands": {
+		"open-console": {
+			"suggested_key": {
+				"default": "Ctrl+Alt+M",
+				"mac": "Command+Alt+M"
+			},
+			"description": "Open command menu"
+		}
+	},
+	"background": {
+		"scripts": ["background.js"]
+	},
+	"content_scripts": [
+		{
+			"matches": [
+				"<all_urls>"
+			],
+			"run_at": "document_end",
+			"js": ["focus.js", "jquery.js", "content.js", "virtualized-list.min.js"],
+			"css": ["content.css"]
+		}
+	],
+	"web_accessible_resources": ["content.html", "newtab.html", "assets/*", "popup.css", "popup.js"],
+	"permissions": [
+		"tabs", "activeTab", "bookmarks", "browsingData", "history", "search","webRequestBlocking"
+	]
+}
