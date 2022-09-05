@@ -1,4 +1,4 @@
 key.pem
 cert.pem
 go.sum
-console.sh
+vendor

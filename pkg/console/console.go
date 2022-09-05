@@ -28,13 +28,9 @@ func Console(flags quicli.Config) {
 
 	port := ":" + flags.GetStringFlag("port")
 	addr := flags.GetStringFlag("url")
-	var url, wsEndpoint string
-	if flags.GetStringFlag("front-url") != "" {
-		url = flags.GetStringFlag("front-url")
-	} else {
-		url = addr + port
-	}
+	url := addr + port
 
+	var wsEndpoint string
 	if flags.GetBoolFlag("secure") {
 		wsEndpoint = encryption.GenerateRandom()
 	} else {
