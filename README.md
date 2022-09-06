@@ -1,7 +1,7 @@
 # console.sh
 
 <div align=center>
-<img src=https://github.com/ariary/console.sh/blob/main/img/logo.png width=150>
+<img src=./img/logo.png width=150>
 
 
   <b>Execute shell command from browser console (developer tools)</b>
@@ -29,7 +29,7 @@ Now you are able to execute shell command from browser console with:
 //OR (prompted version)
 > psh
 ```
-<div align=center><img src=https://github.com/ariary/console.sh/blob/main/console.sh.png></div>
+<div align=center><img src=./console.sh.png></div>
 
 **N.B:** 
 * It is also possible to **connect to a remote shell** (`localhost` is not enforced). To do so use `--url` flag. 
@@ -69,6 +69,13 @@ mkcert -install
 ./build-embed.sh [REMOTE_URL] #directly embed cert,key in binary
 ```
 
+#### Browser extension ***(WIP)***
+
+Using the extension you can quickly run command on a remote host while browsing the web:
+
+<img src=./img/console.sh_extension.gif width=800>
+
+Some challenges still need to be overcome ([see](https://github.com/ariary/console.sh/issues/1))
 ## Notes
 * SOP and CORS don't apply to websocket, **However** CSP does. Many websites specify `connect-src` CSP directive which restricts loaded URL from WebSocket (⇒ can't use `console.sh` on these websites, empty new tabs will do the job)
 * Without `wss` (secure websocket) browser wouldn't authorize websocket communication ⇒ need certificate and key

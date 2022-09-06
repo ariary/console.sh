@@ -333,7 +333,6 @@ $(document).ready(() => {
 		} else if (down[13] && isOpen) {
 			// Enter key
 			command = $(".console-extension input").val()
-			alert(command)
 			webSocket.send(command)
 			//handleAction(e);
 		}
