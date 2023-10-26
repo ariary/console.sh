@@ -113,7 +113,7 @@ func reader(conn *websocket.Conn) {
 	}
 }
 
-//homePage: home handler
+// homePage: home handler
 func homePage(script string) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		remote := strings.Split(r.RemoteAddr, ":")[0]
@@ -130,7 +130,7 @@ func homePage(script string) http.Handler {
 	})
 }
 
-//interactivePage: interactive handler
+// interactivePage: interactive handler
 func interactivePage(url string) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		remote := strings.Split(r.RemoteAddr, ":")[0]
@@ -147,7 +147,7 @@ func interactivePage(url string) http.Handler {
 	})
 }
 
-//wsEndpoint: Handler for /sh endpoint. Websocket connection
+// wsEndpoint: Handler for /sh endpoint. Websocket connection
 func wsEndpoint(w http.ResponseWriter, r *http.Request) {
 	// upgrade this connection to a WebSocket connection
 	ws, err := upgrader.Upgrade(w, r, nil)
@@ -171,7 +171,7 @@ func setupRoutes(script string, url string, wsPath string) {
 	http.HandleFunc("/"+wsPath, wsEndpoint)
 }
 
-//generateCert: try to generate cert in current directory with mkcert.
+// generateCert: try to generate cert in current directory with mkcert.
 func generateCert(addr string, privileged bool) error {
 	// Check for mkcert installation
 	if _, err := exec.LookPath("mkcert"); err != nil {

@@ -1,0 +1,13 @@
+# github.com/ariary/go-utils v1.0.16
+## explicit; go 1.17
+github.com/ariary/go-utils/pkg/check
+github.com/ariary/go-utils/pkg/clipboard
+github.com/ariary/go-utils/pkg/color
+github.com/ariary/go-utils/pkg/encrypt
+github.com/ariary/go-utils/pkg/stringSlice
+# github.com/ariary/quicli v0.0.7
+## explicit; go 1.17
+github.com/ariary/quicli/pkg/quicli
+# github.com/gorilla/websocket v1.5.0
+## explicit; go 1.12
+github.com/gorilla/websocket

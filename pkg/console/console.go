@@ -88,7 +88,7 @@ func Console(flags quicli.Config) {
 	}
 }
 
-//execute command on shell and return stdout & stderr
+// execute command on shell and return stdout & stderr
 func execute(cmd string) string {
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
